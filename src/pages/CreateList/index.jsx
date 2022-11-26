@@ -1,8 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { db } from '../../config/firebase'
+import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { useSearchParams } from 'react-router-dom'
 
 const CreateList = () => {
+    const [searchparams] = useSearchParams();
+    // const searchparams.get('id'))
+    const docId = searchparams.get('id')
+    const postRef = collection(db, 'post')
+
     let navigate = useNavigate()
 
     const [name, setName] = useState("")
@@ -13,26 +20,55 @@ const CreateList = () => {
 
     const addSocialLink = (e) => {
         const name = e.target.value.toLowerCase()
-        const obj ={ name, link:"google.com" }
+        const obj = { name, link: "" }
         setSocialLinks(links => [...links, obj])
     }
 
-    const dataChange = (e) =>{
-        console.log(e.target.name)
-        console.log(e.target.value)
-
-        const socialItemIndex = socialLinks.findIndex(item => item.name == e.target.name.toLowerCase())
-        // socialLinks[socialItemIndex] = { ...socialLinks[socialItemIndex], link: e.target.value }
-        const _socialLinks = socialLinks.filter(item => item.name != e.target.name)
-        console.log(_socialLinks)
+    const dataChange = (e) => {
+        const _socialLinks = socialLinks.map(item => item.name == e.target.name? { ...item, link: e.target.value } : item)
         setSocialLinks(_socialLinks)
-
-        // console.log(socialItemIndex)
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault() 
+        await addDoc(postRef, {
+            name, description, category, socialLinks
+        })
+
         navigate('/listing')
     }
+
+
+    const updatePost = async (e) => {
+        e.preventDefault()
+        try {
+            console.log(docId)
+            const postDoc = doc(db, "post", docId)
+            await updateDoc(postDoc, {name, category, description, socialLinks})
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+    useEffect(() =>{
+        if (docId) {
+            console.log('hello')
+            // const docId = searchparams.get('id')
+            const docRef = doc(db, 'post', docId)
+            const getData = async () =>{
+                const data = await getDoc(docRef)
+                const post = data.data()
+                console.log(post)
+                setName(post.name)
+                setCategory(post.category)
+                setDescription(post.description)
+                setSocialLinks(post.socialLinks)
+            }
+            getData()
+        }
+    },[])
 
     return (
         <>
@@ -40,48 +76,45 @@ const CreateList = () => {
                 <div className="row">
                     <div className="col-md-6 offset-md-3">
                         <h2 className="text-center mb-3">Fill the form</h2>
-                        { socialLinks.map(item => (
+                        {/* {socialLinks.map(item => (
                             <div key={item.name}>
-                                <span>{ item.name }</span>:
-                                <span>{ item.link }</span>
+                                <span>{item.name}</span>:
+                                <span>{item.link}</span>
                             </div>
-                        )) }
-                        
+                        ))} */}
+    { docId ? docId : 'no id'}
                         <form>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputEmail1" className="form-label">Name:</label>
-                                <input type="text" name="name" className="form-control" onChange={(e) => setName(e.target.value)} />
+                                <input type="text" value={name} name="name" className="form-control" onChange={(e) => setName(e.target.value)} />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Description:</label>
-                                <textarea className="form-control" row="5" />
+                                <textarea className="form-control" row="5" value={description} onChange={(e) => setDescription(e.target.value)}/>
                             </div>
 
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Category:</label>
-                                <select className="form-select" aria-label="Default select example">
-                                    <option>Select Category</option>
-                                    <option defaultValue="1">One</option>
-                                    <option defaultValue="2">Two</option>
-                                    <option defaultValue="3">Three</option>
+                                <select className="form-select" value={category} aria-label="Default select example" onChange={(e) => setCategory(e.target.value)}>
+                                    <option value="" disabled>Select Category</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
                                 </select>
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Social Links:</label>
-                                <select className="form-select" aria-label="Default select example" onChange={addSocialLink}>
-                                    <option selected disabled>Select Social Media</option>
-                                    {
-                                        socials.map(social => (
-                                            <option key={social} defaultValue={social}>{social}</option>
-                                        ))
-                                    }
+                                <select defaultValue="" className="form-select" aria-label="Default select example" onChange={addSocialLink}>
+                                    <option value="" disabled>Select Social Media</option>
+                                    {socials.map(social => (<option key={social} value={social}>{social}</option>))}
                                 </select>
-                                { socialLinks.length != 0 
-                                ?
-                                socialLinks.map(soc => (
-                                    <input type="text" className="form-control mt-3" name={soc.name} placeholder={soc.name} key={soc.name} onChange={dataChange} /> 
-                                ))
-                                : null }
+                                
+                                {socialLinks.length != 0
+                                    ?
+                                    socialLinks.map(soc => (
+                                        <input type="text" value={soc.link} className="form-control mt-3" name={soc.name} placeholder={soc.name} key={soc.name} onChange={dataChange} />
+                                    ))
+                                    : null}
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Upload Photo</label>
@@ -90,7 +123,14 @@ const CreateList = () => {
                             <div className="mb-3">
                                 <label className="form-label">Images Previews</label>
                             </div>
-                            <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+                            { 
+                                docId 
+                                ?
+                                <button type="submit" className="btn btn-primary" onClick={updatePost}>Update</button>
+                                :
+                                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+
+                            }
                         </form>
                     </div>
                 </div>
