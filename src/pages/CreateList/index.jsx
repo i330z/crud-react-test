@@ -48,7 +48,7 @@ const CreateList = () => {
             console.log(docId)
             const postDoc = doc(db, "post", docId)
             await updateDoc(postDoc, { name, category, description, socialLinks })
-
+            navigate('/listing')
         } catch (error) {
             console.log(error)
         }

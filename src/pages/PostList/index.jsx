@@ -24,6 +24,7 @@ const PostList = () => {
     }
 
     const deletePost = async (id) => {
+        alert('You Sure bro!!')
         const postDoc = doc(db,"post", id)
         await deleteDoc(postDoc)
     }
@@ -36,7 +37,7 @@ const PostList = () => {
         }
 
         getPosts()
-    }, [])
+    }, [deletePost])
 
 
     return (
@@ -48,8 +49,8 @@ const PostList = () => {
                     {
                         posts.map((post) =>
                         (
-                            <div className="col-md-6 col-lg-4" key={post.name}>
-                                <div className="card">
+                            <div className="col-md-6 col-lg-12" key={post.name}>
+                                <div className="card mb-2">
                                     <div className="card-body">
                                         <h5 className="card-title">{ post.name }</h5>
                                         <p>{ post.description }</p>
