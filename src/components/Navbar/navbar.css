@@ -1,0 +1,9 @@
+nav{
+   line-height: 50px;
+    width: 100%;
+}
+
+nav a{
+    /* color: white; */
+    margin: 5px;
+}

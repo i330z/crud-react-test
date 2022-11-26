@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import CreateList from './pages/CreateList'
 import PostList from './pages/PostList'
 import PostDetail from './pages/PostDetail'
+import Navbar from './components/Navbar'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -12,6 +13,7 @@ function App() {
   return (
     <div className="App">
       <Router>
+        <Navbar></Navbar>
         <Routes>
           <Route index element={ <Home/> }></Route>
           <Route path="/create-list" element={ <CreateList /> }></Route>
