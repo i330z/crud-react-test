@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../config/firebase'
 import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore'
+import {  getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
+import { v4 } from 'uuid'
 import { useSearchParams } from 'react-router-dom'
 
 const CreateList = () => {
@@ -17,6 +19,7 @@ const CreateList = () => {
     const [category, setCategory] = useState("")
     const socials = ['Instagram', 'Twitter', 'Youtube']
     const [socialLinks, setSocialLinks] = useState([])
+    const [imageUpload, setImageUpload] = useState(null)
 
     const addSocialLink = (e) => {
         const name = e.target.value.toLowerCase()
@@ -25,12 +28,12 @@ const CreateList = () => {
     }
 
     const dataChange = (e) => {
-        const _socialLinks = socialLinks.map(item => item.name == e.target.name? { ...item, link: e.target.value } : item)
+        const _socialLinks = socialLinks.map(item => item.name == e.target.name ? { ...item, link: e.target.value } : item)
         setSocialLinks(_socialLinks)
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault() 
+        e.preventDefault()
         await addDoc(postRef, {
             name, description, category, socialLinks
         })
@@ -44,20 +47,33 @@ const CreateList = () => {
         try {
             console.log(docId)
             const postDoc = doc(db, "post", docId)
-            await updateDoc(postDoc, {name, category, description, socialLinks})
-            
+            await updateDoc(postDoc, { name, category, description, socialLinks })
+
         } catch (error) {
             console.log(error)
         }
     }
 
+    const uploadImage = (e) => {
+        e.preventDefault()
+        if (imageUpload == null) return
+        const storage = getStorage();
+        const imageRef = ref(storage, `test/${imageUpload.name + v4()}`);
+        uploadBytes(imageRef, imageUpload).then(() => {
+            console.log('Image Uploaded')
+            getDownloadURL(imageRef).then((downloadURL) => {
+                console.log('File available at', downloadURL);
+              });
+        })
 
-    useEffect(() =>{
+    }
+
+    useEffect(() => {
         if (docId) {
             console.log('hello')
             // const docId = searchparams.get('id')
             const docRef = doc(db, 'post', docId)
-            const getData = async () =>{
+            const getData = async () => {
                 const data = await getDoc(docRef)
                 const post = data.data()
                 console.log(post)
@@ -68,7 +84,7 @@ const CreateList = () => {
             }
             getData()
         }
-    },[])
+    }, [])
 
     return (
         <>
@@ -82,7 +98,7 @@ const CreateList = () => {
                                 <span>{item.link}</span>
                             </div>
                         ))} */}
-    { docId ? docId : 'no id'}
+                        {docId ? docId : 'no id'}
                         <form>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputEmail1" className="form-label">Name:</label>
@@ -90,7 +106,7 @@ const CreateList = () => {
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Description:</label>
-                                <textarea className="form-control" row="5" value={description} onChange={(e) => setDescription(e.target.value)}/>
+                                <textarea className="form-control" row="5" value={description} onChange={(e) => setDescription(e.target.value)} />
                             </div>
 
                             <div className="mb-3">
@@ -108,7 +124,7 @@ const CreateList = () => {
                                     <option value="" disabled>Select Social Media</option>
                                     {socials.map(social => (<option key={social} value={social}>{social}</option>))}
                                 </select>
-                                
+
                                 {socialLinks.length != 0
                                     ?
                                     socialLinks.map(soc => (
@@ -118,23 +134,25 @@ const CreateList = () => {
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Upload Photo</label>
-                                <input type="file" className="form-control" />
+                                <input type="file" className="form-control" onChange={(e) => setImageUpload(e.target.files[0])}/>
+                                <button className='btn btn-info' onClick={uploadImage}>Upload Image</button>
                             </div>
                             <div className="mb-3">
                                 <label className="form-label">Images Previews</label>
                             </div>
-                            { 
-                                docId 
-                                ?
-                                <button type="submit" className="btn btn-primary" onClick={updatePost}>Update</button>
-                                :
-                                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+                            {
+                                docId
+                                    ?
+                                    <button type="submit" className="btn btn-primary" onClick={updatePost}>Update</button>
+                                    :
+                                    <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
 
                             }
                         </form>
                     </div>
                 </div>
             </div>
+            
         </>
     );
 }
