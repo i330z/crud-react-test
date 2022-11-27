@@ -18,7 +18,7 @@ function App() {
           <Route index element={ <Home/> }></Route>
           <Route path="/create-list" element={ <CreateList /> }></Route>
           <Route path="/listing" element={ <PostList /> }></Route>
-          <Route path="/listing/:slug" element={ <PostDetail /> }></Route>
+          <Route path="/listing/:id" element={ <PostDetail /> }></Route>
           <Route path="/*" element={ <h1>Error Page</h1> }></Route>
         </Routes>
       </Router>

@@ -20,6 +20,8 @@ const CreateList = () => {
     const socials = ['Instagram', 'Twitter', 'Youtube']
     const [socialLinks, setSocialLinks] = useState([])
     const [imageUpload, setImageUpload] = useState(null)
+    const [imageUrl, setimageUrl] = useState('')
+
 
     const addSocialLink = (e) => {
         const name = e.target.value.toLowerCase()
@@ -63,6 +65,7 @@ const CreateList = () => {
             console.log('Image Uploaded')
             getDownloadURL(imageRef).then((downloadURL) => {
                 console.log('File available at', downloadURL);
+                setimageUrl(downloadURL)
               });
         })
 
@@ -137,9 +140,7 @@ const CreateList = () => {
                                 <input type="file" className="form-control" onChange={(e) => setImageUpload(e.target.files[0])}/>
                                 <button className='btn btn-info' onClick={uploadImage}>Upload Image</button>
                             </div>
-                            <div className="mb-3">
-                                <label className="form-label">Images Previews</label>
-                            </div>
+                        
                             {
                                 docId
                                     ?
@@ -149,6 +150,12 @@ const CreateList = () => {
 
                             }
                         </form>
+                        <div className="mb-3">
+                                <label className="form-label">Images Previews</label>
+                                <img src={imageUrl} alt="" sx={{width:'200px'}} />
+                            </div>
+
+
                     </div>
                 </div>
             </div>
