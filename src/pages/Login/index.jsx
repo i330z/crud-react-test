@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { logInUser } from "../../config/auth";
-import { auth } from "../../config/firebase";
 
-const LogInUser = () => {
+const LogInUser = ({ setIsAuth }) => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+
     const signIn = async (e) => {
         e.preventDefault()
-
         const user = await logInUser(email, password)
         console.log(user)
-
+        setIsAuth(true)
     }
+
+
     return (
         <div className="container">
             <div className="row">

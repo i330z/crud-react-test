@@ -11,16 +11,16 @@ import Login from './pages/Login'
 import PasswordReset from './pages/PasswordReset'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isAuth, setIsAuth] = useState(false)
 
   return (
     <div className="App">
       <Router>
-        <Navbar></Navbar>
+        <Navbar isAuth={isAuth}></Navbar>
         <Routes>
           <Route index element={ <Home/> }></Route>
           <Route path='/register' element={ <Register/> }></Route>
-          <Route path='/login' element={ <Login/> }></Route>
+          <Route path='/login' element={ <Login setIsAuth={setIsAuth}/> }></Route>
           <Route path='/reset-password' element={ <PasswordReset/> }></Route>
           <Route path="/create-list" element={ <CreateList /> }></Route>
           <Route path="/listing" element={ <PostList /> }></Route>

@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
-import { logOutUser } from "../../config/auth";
+
 
 const Home = () => {
 
-    const logOut = async() =>{
-      await logOutUser()
-    }
+    
 
     return (
         <>
@@ -17,7 +15,7 @@ const Home = () => {
                             <button className="btn btn-primary">Create List</button>
                         </Link>
 
-                        <button className="m-2 btn btn-danger" onClick={logOut}>SignOut</button>
+                        
                     </div>
                 </div>
             </div>
