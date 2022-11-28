@@ -6,6 +6,9 @@ import CreateList from './pages/CreateList'
 import PostList from './pages/PostList'
 import PostDetail from './pages/PostDetail'
 import Navbar from './components/Navbar'
+import Register from './pages/Register'
+import Login from './pages/Login'
+import PasswordReset from './pages/PasswordReset'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -16,6 +19,9 @@ function App() {
         <Navbar></Navbar>
         <Routes>
           <Route index element={ <Home/> }></Route>
+          <Route path='/register' element={ <Register/> }></Route>
+          <Route path='/login' element={ <Login/> }></Route>
+          <Route path='/reset-password' element={ <PasswordReset/> }></Route>
           <Route path="/create-list" element={ <CreateList /> }></Route>
           <Route path="/listing" element={ <PostList /> }></Route>
           <Route path="/listing/:id" element={ <PostDetail /> }></Route>
