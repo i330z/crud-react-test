@@ -2,10 +2,15 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { logOutUser } from "../../config/auth";
 import './navbar.css'
-const Navbar = ({ isAuth }) => {
+import { useNavigate } from 'react-router-dom'
+const Navbar = ({ isAuth, setIsAuth }) => {
+
+    const navigate = useNavigate()
 
     const logOut = async() =>{
         await logOutUser()
+        setIsAuth(false)
+        navigate('/')
       }
 
     return ( 

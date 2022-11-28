@@ -16,7 +16,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Navbar isAuth={isAuth}></Navbar>
+        <Navbar isAuth={isAuth} setIsAuth={setIsAuth}></Navbar>
         <Routes>
           <Route index element={ <Home/> }></Route>
           <Route path='/register' element={ <Register/> }></Route>
