@@ -72,6 +72,7 @@ const CreateList = () => {
     }
 
     useEffect(() => {
+        
         if (docId) {
             console.log('hello')
             // const docId = searchparams.get('id')

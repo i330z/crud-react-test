@@ -14,8 +14,6 @@ const Home = () => {
                         <Link to="/create-list">
                             <button className="btn btn-primary">Create List</button>
                         </Link>
-
-                        
                     </div>
                 </div>
             </div>

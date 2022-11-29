@@ -35,9 +35,9 @@ const PostList = () => {
             const data = await getDocs(postRef)
             setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
         }
-
+        console.log('rendering')
         getPosts()
-    }, [deletePost])
+    }, [])
 
 
     return (
