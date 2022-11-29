@@ -72,7 +72,7 @@ const CreateList = () => {
     }
 
     useEffect(() => {
-        
+        console.log('rendering')
         if (docId) {
             console.log('hello')
             // const docId = searchparams.get('id')
@@ -122,17 +122,18 @@ const CreateList = () => {
                                     <option value="3">Three</option>
                                 </select>
                             </div>
+                          
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Social Links:</label>
                                 <select defaultValue="" className="form-select" aria-label="Default select example" onChange={addSocialLink}>
                                     <option value="" disabled>Select Social Media</option>
-                                    {socials.map(social => (<option key={social} value={social}>{social}</option>))}
+                                    {socials.map((social,index) => (<option key={index} value={social}>{social}</option>))}
                                 </select>
 
                                 {socialLinks.length != 0
                                     ?
-                                    socialLinks.map(soc => (
-                                        <input type="text" value={soc.link} className="form-control mt-3" name={soc.name} placeholder={soc.name} key={soc.name} onChange={dataChange} />
+                                    socialLinks.map((soc,index) => (
+                                        <input type="text" value={soc.link} className="form-control mt-3" name={soc.name} placeholder={soc.name} key={index} onChange={dataChange} />
                                     ))
                                     : null}
                             </div>
@@ -155,8 +156,6 @@ const CreateList = () => {
                                 <label className="form-label">Images Previews</label>
                                 <img src={imageUrl} alt="" sx={{width:'200px'}} />
                             </div>
-
-
                     </div>
                 </div>
             </div>
